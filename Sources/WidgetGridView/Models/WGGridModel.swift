@@ -19,9 +19,9 @@ public struct WGGridModel: Identifiable {
         self.cells = { () -> [WGCellModel] in
             var rCells: [WGCellModel] = []
             
-            for i in 0..<size.width {
-                for j in 0..<size.height {
-                    rCells.append(WGCellModel(id: WGCoordinate(j, i)))
+            for j in 0..<size.height {
+                for i in 0..<size.width {
+                    rCells.append(WGCellModel(id: WGCoordinate(i, j)))
                 }
             }
             
@@ -75,14 +75,14 @@ extension WGGridModel {
     ///   - id: the ID of a widget as a WGCoordinate
     ///   - withSize: a size of a widget an a WGSize
     /// - Returns: an array of WGCoordinate and thows
-    func getCells(startingIn id: WGCoordinate, withSize: WGSize) throws -> [WGCoordinate] {
-        let maxWidth = id.width + Int(size.getSize().width) - 1
-        let maxHeight = id.height + Int(size.getSize().height) - 1
+    func getCells(startingIn id: WGCoordinate, with size: WGSize) throws -> [WGCoordinate] {
+        let maxWidth = id.width + size.width - 1
+        let maxHeight = id.height + size.height - 1
         let testForID = WGCoordinate(maxWidth, maxHeight)
         
         var ids: [WGCoordinate] = []
         
-        if self.cells.firstIndex(where: { $0.id == testForID }) != nil {
+        if (self.cells.firstIndex(where: { $0.id == testForID }) != nil) {
             for i in (id.width)..<(maxWidth + 1) {
                 for j in (id.height)..<(maxHeight + 1) {
                     ids.append(WGCoordinate(i, j))
@@ -104,7 +104,7 @@ extension WGGridModel {
 extension WGGridModel {
     private func testWidgetFits(_ widget: WGWidgetModel, at cellID: WGCoordinate) throws -> [WGCellModel] {
         do {
-            let gridCells = try self.getCells(startingIn: cellID, withSize: widget.size)
+            let gridCells = try self.getCells(startingIn: cellID, with: widget.size)
             let dataMap = try self.findCell(for: gridCells)
             return dataMap
         } catch {
@@ -115,7 +115,7 @@ extension WGGridModel {
     private func getCordsFromWidget(with widget: WGWidgetModel) throws -> [WGCoordinate] {
         do {
             if let widgetCord = self.cells.first(where: { $0.data == widget })?.id {
-                let cords = try getCells(startingIn: widgetCord, withSize: widget.size)
+                let cords = try getCells(startingIn: widgetCord, with: widget.size)
                 return cords
             } else {
                 throw Errors.CoordinateNotFound

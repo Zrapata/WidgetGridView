@@ -19,5 +19,10 @@ extension View {
 }
 
 extension View {
-    
+    func padding(_ cord: WGCoordinate, with config: WGSize) -> some View {
+        let size = WGSize(cord.width + 1, cord.height + 1, with: config)
+        return self
+            .padding(.top, size.getSize().height - size.getSize(for: 1).height)
+            .padding(.leading, size.getSize().width - size.getSize(for: 1).width)
+    }
 }

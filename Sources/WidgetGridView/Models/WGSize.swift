@@ -30,13 +30,17 @@ public struct WGSize: Codable {
         self.init(size, size)
     }
     
+    public init(_ width: Int, _ height: Int, with config: WGSize) {
+        self.init(width, height, multiplier: config.multiplier, padding: config.padding)
+    }
+    
     public func getSize(_ newWidth: Int? = nil, _ newHeigth: Int? = nil) -> CGSize {
         CGSize(
             width: CGFloat((self.multiplier * (newWidth ?? self.width)) + ((newWidth ?? width) - 1) * self.padding),
             height: CGFloat((self.multiplier * (newHeigth ?? self.height)) + ((newHeigth ?? height) - 1) * self.padding))
     }
     
-    public func getSize(for size: Int = 1) -> CGSize {
+    public func getSize(for size: Int) -> CGSize {
         return self.getSize(size, size)
     }
     
