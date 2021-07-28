@@ -166,11 +166,18 @@ extension WGGridModel {
     
     mutating func addWidget(_ widget: WGWidgetModel, at cellID: WGCoordinate) throws -> Void {
         do {
-           _ = try testWidgetFits(widget, at: cellID)
+            let dataMap = try testWidgetFits(widget, at: cellID)
+            _ = try testWidgetFits(widget, at: cellID)
+
+             if let thisWidget = self.cells.first(where: { $0.data == widget }) {
+                 try deleteDataFromCell(widget: thisWidget.data!)
+             }
             
-            if let thisWidget = self.cells.first(where: { $0.data == widget }) {
-                try deleteDataFromCell(widget: thisWidget.data!)
-            }
+            try addDataToCells(cellData: dataMap, for: widget)
+            self.widgets.append(widget)
+            
+        } catch {
+            throw error
         }
     }
     

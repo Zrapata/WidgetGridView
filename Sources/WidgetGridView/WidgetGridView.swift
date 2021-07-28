@@ -29,15 +29,32 @@ public struct WidgetGridView: View {
                     }) {
                         if thisCell.isStart {
                             Color.blue
-                                .frame(thisCell.data!.size)
+                                .frame(thisCell.data!.size.getSize())
+                        } else {
+                            Color.green
+                                .frame(grid.size.getSize(for: 1))
                         }
                     }
                 }
             }
         }
+        .frame(grid.size.getSize())
+    }
+    
+    public init(_ grid: WGGridModel) {
+        _grid = State(initialValue: grid)
     }
     
     public init(_ size: WGSize) {
-        _grid = State(initialValue: WGGridModel(size))
+        self.init(WGGridModel(size))
     }
 }
+
+struct WidgetGridView_Preview: PreviewProvider {
+    static var previews: some View {
+        WidgetGridView(testingGrid)
+            
+    }
+}
+
+private let testingGrid = WGGridModel(2)
