@@ -100,10 +100,14 @@ public struct WidgetGridView: View {
 
 struct WidgetGridView_Preview: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            WidgetGridView(testingGrid)
+        if #available(iOSApplicationExtension 15.0, *) {
+            GeometryReader { geo in
+                WidgetGridView(WGGridModel(WGSize(2, 3, multiplier: 30, padding: 0, with: geo, for: .width)))
+            }
+            .previewInterfaceOrientation(.landscapeRight)
+        } else {
+            // Fallback on earlier versions
         }
-            
     }
 }
 

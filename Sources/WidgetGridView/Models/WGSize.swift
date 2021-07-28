@@ -21,9 +21,30 @@ public struct WGSize: Codable {
         self.width = width
         self.height = height
         self.multiplier = multiplier
-        self.padding = padding
+        self.padding = padding < 0 ? 0 : padding
         
         self.count = width * height
+    }
+    
+    public init(_ width: Int = 3, _ height: Int = 5, multiplier: Int = 75, padding: Int = 5, with geometry: GeometryProxy, for parameter: Parameters) {
+        
+        var newWidth = width
+        var newHeight = height
+        var newPadding = padding
+        var newMultiplier = multiplier
+        
+        switch parameter {
+        case .width:
+            newWidth = Int(geometry.size.width / CGFloat(multiplier + padding))
+        case .height:
+            newHeight = Int(geometry.size.height / CGFloat(multiplier + padding))
+        case .padding:
+            newPadding = Int((geometry.size.width - (CGFloat(width * multiplier))) / CGFloat((width - 2)))
+        case .multiplier:
+            newMultiplier = Int((geometry.size.width - CGFloat(width * padding)) / CGFloat(width))
+        }
+        
+        self.init(newWidth, newHeight, multiplier: newMultiplier, padding: newPadding)
     }
     
     public init(_ size: Int = 1) {
@@ -53,4 +74,10 @@ public struct WGSize: Codable {
     public func getPadding() -> CGFloat {
         return CGFloat(padding)
     }
+    
+    public enum Parameters {
+        case width, height, padding, multiplier
+    }
+    
+    
 }
